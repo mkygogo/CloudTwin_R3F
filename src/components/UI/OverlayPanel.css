@@ -56,7 +56,7 @@
 
 /* --- 设备面板 (右侧) --- */
 .panel-device {
-  top: 16px;
+  top: 80px;
   right: 16px;
   width: 260px;
   max-height: 80vh;
@@ -240,7 +240,7 @@
 
 /* --- 编辑器属性面板 (右侧) --- */
 .panel-editor-props {
-  top: 16px;
+  top: 80px;
   right: 16px;
   width: 280px;
   max-height: 85vh;
@@ -310,4 +310,172 @@
 
 .twin-tooltip-row span:first-child {
   color: #888;
+}
+
+/* --- 场景选择器 (右上) --- */
+.panel-scenes {
+  top: 16px;
+  right: 16px;
+  min-width: 240px;
+  max-width: 320px;
+  z-index: 15;
+}
+
+.scenes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scenes-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.current-scene-badge {
+  font-size: 11px;
+  font-weight: 400;
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  padding: 1px 8px;
+  border-radius: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.scenes-toggle {
+  font-size: 10px;
+  color: #666;
+}
+
+.scenes-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.scene-item {
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(100, 140, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scene-item:hover {
+  background: rgba(100, 140, 255, 0.08);
+  border-color: rgba(100, 140, 255, 0.2);
+}
+
+.scene-item.active {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.scene-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e0e0ff;
+}
+
+.scene-item-desc {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.scene-item-meta {
+  font-size: 10px;
+  color: #555;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scene-active-tag {
+  background: rgba(0, 212, 255, 0.15);
+  color: #00d4ff;
+  padding: 0 6px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.scene-empty {
+  color: #555;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 12px;
+}
+
+.scene-save-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: rgba(255, 171, 64, 0.1);
+  border: 1px dashed rgba(255, 171, 64, 0.3);
+  border-radius: 5px;
+  color: #ffab40;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+
+.scene-save-btn:hover {
+  background: rgba(255, 171, 64, 0.2);
+}
+
+.scene-save-form {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scene-save-form input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(100, 140, 255, 0.2);
+  border-radius: 4px;
+  color: #e0e0ff;
+  padding: 6px 8px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.scene-save-form input:focus {
+  outline: none;
+  border-color: #648cff;
+}
+
+.scene-save-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.scene-save-actions button {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(100, 140, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: #c0c0e0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.scene-save-actions button:first-child {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+}
+
+.scene-save-actions button:hover {
+  background: rgba(100, 140, 255, 0.15);
 }

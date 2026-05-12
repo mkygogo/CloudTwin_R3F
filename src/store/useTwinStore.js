@@ -36,6 +36,11 @@ const useTwinStore = create((set, get) => ({
   // 编辑器: 当前变换模式 'translate' | 'rotate' | 'scale'
   transformMode: 'translate',
 
+  // 场景列表
+  sceneList: [],
+  currentSceneId: null,
+  scenesLoading: false,
+
   // --- Actions ---
   setDeviceData: (deviceId, data) =>
     set((state) => ({
@@ -90,6 +95,75 @@ const useTwinStore = create((set, get) => ({
   },
 
   importLayout: (data) => set({ layoutOverrides: data }),
+
+  // 场景列表管理
+  fetchSceneList: async () => {
+    set({ scenesLoading: true });
+    try {
+      const res = await fetch('/scenes/index.json');
+      const { scenes } = await res.json();
+      set({ sceneList: scenes, scenesLoading: false });
+    } catch (e) {
+      console.error('Failed to fetch scene list:', e);
+      set({ scenesLoading: false });
+    }
+  },
+
+  loadScene: async (sceneId) => {
+    const { sceneList } = get();
+    const scene = sceneList.find((s) => s.id === sceneId);
+    if (!scene) return;
+
+    if (!scene.file) {
+      // 默认布局 → 清空覆盖
+      set({ layoutOverrides: {}, currentSceneId: sceneId });
+      return;
+    }
+
+    try {
+      const res = await fetch(scene.file);
+      const data = await res.json();
+      set({ layoutOverrides: data, currentSceneId: sceneId });
+    } catch (e) {
+      console.error('Failed to load scene:', e);
+    }
+  },
+
+  saveSceneToCloud: async (name, description) => {
+    const overrides = get().layoutOverrides;
+    const id = 'scene-' + Date.now();
+    const fileName = `${id}.json`;
+
+    // 保存布局JSON到 public/scenes/
+    // 在生产中可改为 POST 到后端API
+    const sceneData = JSON.stringify(overrides, null, 2);
+    const blob = new Blob([sceneData], { type: 'application/json' });
+
+    // 下载让用户手动放入 public/scenes/ 或通过后端接口保存
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // 更新本地场景列表
+    const newScene = {
+      id,
+      name: name || `布局 ${new Date().toLocaleDateString()}`,
+      description: description || '',
+      file: `/scenes/${fileName}`,
+      createdAt: new Date().toISOString().slice(0, 10),
+      thumbnail: null,
+    };
+
+    set((state) => ({
+      sceneList: [...state.sceneList, newScene],
+      currentSceneId: id,
+    }));
+
+    return newScene;
+  },
 }));
 
 export default useTwinStore;

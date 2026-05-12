@@ -1,0 +1,52 @@
+{
+  "GIS_LMJ": {
+    "position": [-211.24, -36.77, 102.41],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "BLQ": {
+    "position": [-225.93, -36.23, 40],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "XQSKG": {
+    "position": [-251.71, -37.43, 12.99],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "4BYZB": {
+    "position": [-161.6, -37.77, -80],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "LMJ": {
+    "position": [-191.25, -45.44, 90.7],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "500KVGIS": {
+    "position": [-97.42, -38.46, -119.68],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "KGGS": {
+    "position": [-62.64, -38.34, 40],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "HKGS": {
+    "position": [-97.11, -38.45, 80],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "JYZZZ": {
+    "position": [-7.23, -38.01, -40.33],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  },
+  "DLDRQ": {
+    "position": [-45, -37.54, 60],
+    "rotation": [0, 0, 0],
+    "scale": 1
+  }
+}

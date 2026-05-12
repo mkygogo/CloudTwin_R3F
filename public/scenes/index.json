@@ -1,0 +1,20 @@
+{
+  "scenes": [
+    {
+      "id": "substation-v1",
+      "name": "变电站布局 V1",
+      "description": "手动编辑的初始布局方案",
+      "file": "/scenes/substation-v1.json",
+      "createdAt": "2026-05-12",
+      "thumbnail": null
+    },
+    {
+      "id": "default",
+      "name": "默认布局",
+      "description": "所有设备使用代码内默认位置",
+      "file": null,
+      "createdAt": "2026-05-12",
+      "thumbnail": null
+    }
+  ]
+}
