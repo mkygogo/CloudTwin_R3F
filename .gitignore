@@ -24,3 +24,10 @@ server/node_modules
 *.sln
 *.sw?
 *.glb
+
+# SSL certs & keys
+ssl_cert/
+*.zip
+*.key
+*.csr
+*.pem
