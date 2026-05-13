@@ -26,7 +26,7 @@ let intervalId = null;
 export function startMockData() {
   if (intervalId) return;
 
-  const { setDeviceData, addAlert, setConnected } = useTwinStore.getState();
+  const { setConnected } = useTwinStore.getState();
   setConnected(true);
 
   intervalId = setInterval(() => {

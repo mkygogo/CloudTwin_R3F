@@ -1,4 +1,3 @@
-import React from 'react';
 import useTwinStore from '../../store/useTwinStore';
 import './OverlayPanel.css';
 

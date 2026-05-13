@@ -1,4 +1,3 @@
-import React from 'react';
 import SubstationScene from './components/Scene/SubstationScene';
 import StatusPanel from './components/UI/StatusPanel';
 import DevicePanel from './components/UI/DevicePanel';

@@ -18,7 +18,6 @@ export default function Toolbar() {
   const exportLayout = useTwinStore((s) => s.exportLayout);
   const importLayout = useTwinStore((s) => s.importLayout);
   const selectedObject = useTwinStore((s) => s.selectedObject);
-  const layoutOverrides = useTwinStore((s) => s.layoutOverrides);
   const fileInputRef = useRef();
 
   const isEditor = appMode === 'editor';
@@ -44,7 +43,7 @@ export default function Toolbar() {
       try {
         const data = JSON.parse(ev.target.result);
         importLayout(data);
-      } catch (err) {
+      } catch {
         alert('布局文件格式错误');
       }
     };
