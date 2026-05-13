@@ -70,6 +70,7 @@ const useTwinStore = create((set, get) => ({
   setAppMode: (mode) => set({ appMode: mode }),
   setTransformMode: (mode) => set({ transformMode: mode }),
   setModelsTotalCount: (n) => set({ modelsTotalCount: n }),
+  resetModelLoadProgress: () => set({ modelsLoadedCount: 0, modelsTotalCount: 0 }),
   incrementModelsLoaded: () => set((state) => ({ modelsLoadedCount: state.modelsLoadedCount + 1 })),
   setConnected: (v) => set({ connected: v }),
 

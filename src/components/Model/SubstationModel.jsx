@@ -3,13 +3,14 @@ import { useGLTF, Html, TransformControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import useTwinStore from '../../store/useTwinStore';
+import { markModelLoaded } from '../../utils/loadMetrics';
 
 const HIGHLIGHT_COLOR = new THREE.Color('#00d4ff');
 const _v3 = new THREE.Vector3();
 const _box = new THREE.Box3();
 
 export default function SubstationModel({ config, orbitRef }) {
-  const { name, file, position, rotation, scale, label } = config;
+  const { name, file, position, rotation, scale, label, totalCount } = config;
   const { scene } = useGLTF(file);
   const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -58,6 +59,7 @@ export default function SubstationModel({ config, orbitRef }) {
     setBbox({ height: size.y, center: _box.getCenter(_v3.clone()) });
 
     incrementModelsLoaded();
+    markModelLoaded(name, totalCount);
   }, [scene]);
 
   // 高亮

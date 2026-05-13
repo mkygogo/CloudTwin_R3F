@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import SubstationScene from './components/Scene/SubstationScene';
 import StatusPanel from './components/UI/StatusPanel';
 import DevicePanel from './components/UI/DevicePanel';
@@ -6,10 +7,15 @@ import Toolbar from './components/UI/Toolbar';
 import EditorPanel from './components/UI/EditorPanel';
 import SceneSelector from './components/UI/SceneSelector';
 import useTwinStore from './store/useTwinStore';
+import { markLoadMetric } from './utils/loadMetrics';
 import './App.css';
 
 export default function App() {
   const appMode = useTwinStore((s) => s.appMode);
+
+  useEffect(() => {
+    markLoadMetric('uiReady');
+  }, []);
 
   return (
     <div className="app-root">

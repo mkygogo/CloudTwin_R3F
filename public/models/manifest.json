@@ -1,0 +1,115 @@
+{
+  "version": "v1",
+  "models": [
+    {
+      "name": "GIS_LMJ",
+      "file": "/models-optimized/v1/GIS_LMJ.glb",
+      "rawFile": "/models/GIS_LMJ.glb",
+      "priority": "critical",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "GIS联络母线"
+    },
+    {
+      "name": "LMJ",
+      "file": "/models-optimized/v1/LMJ.glb",
+      "rawFile": "/models/LMJ.glb",
+      "priority": "critical",
+      "position": [0, 0, -160],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "母线"
+    },
+    {
+      "name": "4BYZB",
+      "file": "/models-optimized/v1/4BYZB.glb",
+      "rawFile": "/models/4BYZB.glb",
+      "priority": "critical",
+      "position": [-55, 0, -80],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "4号变压器组"
+    },
+    {
+      "name": "500KVGIS",
+      "file": "/models-optimized/v1/500KVGIS.glb",
+      "rawFile": "/models/500KVGIS.glb",
+      "priority": "normal",
+      "position": [55, 0, -80],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "500KV GIS"
+    },
+    {
+      "name": "BLQ",
+      "file": "/models-optimized/v1/BLQ.glb",
+      "rawFile": "/models/BLQ.glb",
+      "priority": "normal",
+      "position": [-85, 0, 40],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "避雷器"
+    },
+    {
+      "name": "DLDRQ",
+      "file": "/models-optimized/v1/DLDRQ.glb",
+      "rawFile": "/models/DLDRQ.glb",
+      "priority": "normal",
+      "position": [-45, 0, 60],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "电力电容器"
+    },
+    {
+      "name": "DKQ_GLB",
+      "file": "/models-optimized/v1/DKQ_GLB.glb",
+      "rawFile": "/models/DKQ_GLB.glb",
+      "priority": "normal",
+      "position": [45, 0, 60],
+      "rotation": [0, 0, 0],
+      "scale": 1000,
+      "label": "电抗器"
+    },
+    {
+      "name": "XQSKG",
+      "file": "/models-optimized/v1/XQSKG.glb",
+      "rawFile": "/models/XQSKG.glb",
+      "priority": "normal",
+      "position": [-85, 0, -40],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "SF6断路器"
+    },
+    {
+      "name": "HKGS",
+      "file": "/models-optimized/v1/HKGS.glb",
+      "rawFile": "/models/HKGS.glb",
+      "priority": "background",
+      "position": [85, 0, 80],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "汇控柜室"
+    },
+    {
+      "name": "KGGS",
+      "file": "/models-optimized/v1/KGGS.glb",
+      "rawFile": "/models/KGGS.glb",
+      "priority": "background",
+      "position": [85, 0, 40],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "开关柜室"
+    },
+    {
+      "name": "JYZZZ",
+      "file": "/models-optimized/v1/JYZZZ.glb",
+      "rawFile": "/models/JYZZZ.glb",
+      "priority": "background",
+      "position": [85, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": 1,
+      "label": "继电保护装置"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { Suspense, useRef, useEffect } from 'react';
+import { Component, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
@@ -7,70 +7,167 @@ import {
   Grid,
   Stats,
   Html,
-  useProgress,
 } from '@react-three/drei';
 import SceneLights from './SceneLights';
 import SubstationModel from '../Model/SubstationModel';
 import useTwinStore from '../../store/useTwinStore';
+import { useModelManifest } from '../../hooks/useModelManifest';
+import { useModelLoadQueue } from '../../hooks/useModelLoadQueue';
+import { markLoadMetric, resetModelMetrics } from '../../utils/loadMetrics';
 
-/**
- * 变电站设备布局配置
- * 所有设备默认放在原点，用户通过编辑器模式手动布局
- */
-const SUBSTATION_LAYOUT = [
-  { name: 'GIS_LMJ',   file: '/models/GIS_LMJ.glb',   position: [0, 0, 0],     rotation: [0, 0, 0], scale: 1, label: 'GIS联络母线' },
-  { name: 'LMJ',        file: '/models/LMJ.glb',        position: [0, 0, -160],  rotation: [0, 0, 0], scale: 1, label: '母线' },
-  { name: '4BYZB',      file: '/models/4BYZB.glb',      position: [-55, 0, -80], rotation: [0, 0, 0], scale: 1, label: '4号变压器组' },
-  { name: '500KVGIS',   file: '/models/500KVGIS.glb',   position: [55, 0, -80],  rotation: [0, 0, 0], scale: 1, label: '500KV GIS' },
-  { name: 'BLQ',        file: '/models/BLQ.glb',        position: [-85, 0, 40],  rotation: [0, 0, 0], scale: 1, label: '避雷器' },
-  { name: 'DLDRQ',      file: '/models/DLDRQ.glb',      position: [-45, 0, 60],  rotation: [0, 0, 0], scale: 1, label: '电力电容器' },
-  { name: 'DKQ_GLB',    file: '/models/DKQ_GLB.glb',    position: [45, 0, 60],   rotation: [0, 0, 0], scale: 1000, label: '电抗器' },
-  { name: 'HKGS',       file: '/models/HKGS.glb',       position: [85, 0, 80],   rotation: [0, 0, 0], scale: 1, label: '汇控柜室' },
-  { name: 'KGGS',       file: '/models/KGGS.glb',       position: [85, 0, 40],   rotation: [0, 0, 0], scale: 1, label: '开关柜室' },
-  { name: 'JYZZZ',      file: '/models/JYZZZ.glb',      position: [85, 0, 0],    rotation: [0, 0, 0], scale: 1, label: '继电保护装置' },
-  { name: 'XQSKG',      file: '/models/XQSKG.glb',      position: [-85, 0, -40], rotation: [0, 0, 0], scale: 1, label: 'SF6断路器' },
-];
+class ModelErrorBoundary extends Component {
+  state = { hasError: false };
 
-function LoadingScreen() {
-  const { progress, item, loaded, total } = useProgress();
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.warn('[CloudTwin] 模型加载失败:', this.props.name, error);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.name !== this.props.name || prevProps.file !== this.props.file) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
+function LoadingProgressOverlay({ message, detail, progress = 0, error = false }) {
+  const clampedProgress = Math.max(0, Math.min(100, progress));
+
   return (
-    <Html center>
+    <Html fullscreen style={{ pointerEvents: 'none' }}>
       <div style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
-        color: '#a0c4ff', fontFamily: 'system-ui, sans-serif', whiteSpace: 'nowrap',
+        position: 'absolute',
+        top: '42px',
+        left: '50%',
+        width: '390px',
+        maxWidth: '42vw',
+        transform: 'translateX(-50%)',
+        background: 'rgba(8, 16, 38, 0.72)',
+        border: `1px solid ${error ? 'rgba(255,92,119,0.48)' : 'rgba(78,151,255,0.36)'}`,
+        borderRadius: '6px',
+        padding: '10px 12px',
+        color: error ? '#ff9aad' : '#c9dcff',
+        fontFamily: 'system-ui, sans-serif',
+        boxShadow: '0 12px 34px rgba(0,0,0,0.28)',
+        backdropFilter: 'blur(8px)',
       }}>
-        <div style={{ fontSize: '20px', fontWeight: 600 }}>加载变电站模型...</div>
         <div style={{
-          width: '300px', height: '6px', background: 'rgba(255,255,255,0.1)',
-          borderRadius: '3px', overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          marginBottom: '7px',
+          fontSize: '12px',
+          fontWeight: 600,
+          letterSpacing: 0,
+        }}>
+          <span>{message}</span>
+          {detail && <span style={{ color: error ? '#ffbac5' : '#7fa5e8', fontWeight: 500 }}>{detail}</span>}
+        </div>
+        <div style={{
+          height: '5px',
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '999px',
+          overflow: 'hidden',
         }}>
           <div style={{
-            width: `${progress}%`, height: '100%',
-            background: 'linear-gradient(90deg, #648cff, #00d4ff)',
-            borderRadius: '3px', transition: 'width 0.3s',
+            width: `${clampedProgress}%`,
+            height: '100%',
+            background: error
+              ? 'linear-gradient(90deg, #ff5c77, #ff9aad)'
+              : 'linear-gradient(90deg, #648cff, #00d4ff)',
+            borderRadius: '999px',
+            transition: 'width 0.28s ease',
           }} />
-        </div>
-        <div style={{ fontSize: '13px', color: '#888' }}>{loaded}/{total} — {progress.toFixed(0)}%</div>
-        <div style={{ fontSize: '11px', color: '#555', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {item?.split('/').pop()}
         </div>
       </div>
     </Html>
   );
 }
 
+function ModelPlaceholder({ config, failed = false }) {
+  const { position, rotation, scale, label } = config;
+  return (
+    <group
+      position={position}
+      rotation={rotation}
+      scale={typeof scale === 'number' ? [scale, scale, scale] : scale}
+    >
+      <Html position={[0, 16 / (typeof scale === 'number' ? scale : 1), 0]} center distanceFactor={80}>
+        <div style={{
+          background: failed ? 'rgba(80,18,26,0.74)' : 'rgba(10,10,30,0.54)',
+          border: `1px solid ${failed ? 'rgba(255,92,119,0.45)' : 'rgba(100,140,255,0.16)'}`,
+          borderRadius: '4px',
+          padding: '3px 9px',
+          color: failed ? '#ff8fa3' : '#5f6f9e',
+          fontSize: '11px',
+          fontFamily: 'system-ui, sans-serif',
+          whiteSpace: 'nowrap',
+        }}>
+          {failed ? `${label} 加载失败` : `${label} 加载中`}
+        </div>
+      </Html>
+    </group>
+  );
+}
+
 function SceneContent({ orbitRef }) {
+  const resetModelLoadProgress = useTwinStore((s) => s.resetModelLoadProgress);
   const setModelsTotalCount = useTwinStore((s) => s.setModelsTotalCount);
+  const modelsLoadedCount = useTwinStore((s) => s.modelsLoadedCount);
+  const { models, loading, error, useRawModels } = useModelManifest();
+  const { queuedModels, phase, totalCount } = useModelLoadQueue(models);
+  const progress = totalCount > 0 ? (modelsLoadedCount / totalCount) * 100 : 0;
 
   useEffect(() => {
-    setModelsTotalCount(SUBSTATION_LAYOUT.length);
-  }, []);
+    resetModelLoadProgress();
+    resetModelMetrics();
+    setModelsTotalCount(models.length);
+    if (models.length) {
+      markLoadMetric('manifestReady', { totalCount: models.length, useRawModels });
+    }
+  }, [models.length, resetModelLoadProgress, setModelsTotalCount, useRawModels]);
 
   return (
     <>
-      {SUBSTATION_LAYOUT.map((item) => (
-        <SubstationModel key={item.name} config={item} orbitRef={orbitRef} />
+      {loading && (
+        <LoadingProgressOverlay message="加载核心场景" detail="准备模型清单" progress={8} />
+      )}
+      {error && (
+        <LoadingProgressOverlay message="模型清单加载失败" detail={error.message} progress={100} error />
+      )}
+
+      {queuedModels.map((item) => (
+        <ModelErrorBoundary
+          key={`${item.name}:${item.file}`}
+          name={item.name}
+          file={item.file}
+          fallback={<ModelPlaceholder config={item} failed />}
+        >
+          <Suspense fallback={<ModelPlaceholder config={item} />}>
+            <SubstationModel
+              config={{ ...item, totalCount }}
+              orbitRef={orbitRef}
+            />
+          </Suspense>
+        </ModelErrorBoundary>
       ))}
+
+      {!loading && !error && modelsLoadedCount < totalCount && (
+        <LoadingProgressOverlay
+          message={phase}
+          detail={`${modelsLoadedCount}/${totalCount} · ${Math.round(progress)}%`}
+          progress={progress}
+        />
+      )}
 
       <ContactShadows position={[0, -0.05, 0]} opacity={0.3} scale={500} blur={2} far={20} />
 
@@ -94,6 +191,9 @@ function SceneContent({ orbitRef }) {
 
 export default function SubstationScene() {
   const orbitRef = useRef();
+  const showStats =
+    import.meta.env.VITE_SHOW_STATS === 'true' ||
+    new URLSearchParams(window.location.search).has('stats');
 
   return (
     <Canvas
@@ -108,10 +208,7 @@ export default function SubstationScene() {
       <fog attach="fog" args={['#1a1a2e', 300, 800]} />
 
       <SceneLights />
-
-      <Suspense fallback={<LoadingScreen />}>
-        <SceneContent orbitRef={orbitRef} />
-      </Suspense>
+      <SceneContent orbitRef={orbitRef} />
 
       <OrbitControls
         ref={orbitRef}
@@ -124,7 +221,7 @@ export default function SubstationScene() {
         target={[0, 20, 0]}
       />
 
-      {import.meta.env.DEV && <Stats />}
+      {showStats && <Stats />}
     </Canvas>
   );
 }

@@ -24,6 +24,7 @@ server/node_modules
 *.sln
 *.sw?
 *.glb
+!public/models-optimized/**/*.glb
 
 # SSL certs & keys
 ssl_cert/
